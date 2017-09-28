@@ -9,12 +9,17 @@ import com.list_sample.minimumrecyclerview.R
 import com.list_sample.minimumrecyclerview.adapter.RecyclerViewAdapter
 import com.list_sample.minimumrecyclerview.model.EvenNumberModel
 import com.list_sample.minimumrecyclerview.model.OddNumberModel
+import com.list_sample.minimumrecyclerview.model.SectionHeaderModel
+import com.list_sample.minimumrecyclerview.model.section.HeaderSection
+import com.list_sample.minimumrecyclerview.model.section.NoHeaderSection
+import com.list_sample.minimumrecyclerview.model.section.SectionGroup
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var itemList = ArrayList<Any> ()
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: RecyclerViewAdapter
+    private var sectionGroup = SectionGroup()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recycler_view) as RecyclerView
 
-        adapter = RecyclerViewAdapter(this, itemList)
+        adapter = RecyclerViewAdapter(this, sectionGroup)
         val layoutManager = LinearLayoutManager(applicationContext)
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -43,6 +48,11 @@ class MainActivity : AppCompatActivity() {
                 itemList.add(item)
             }
         }
+
+        sectionGroup
+                .append(HeaderSection(0, SectionHeaderModel("ヘッダータイトル1"), itemList))
+                .append(HeaderSection(1, SectionHeaderModel("ヘッダータイトル2"), itemList))
+                .append(NoHeaderSection(2, itemList))
 
         // 更新
         adapter.notifyDataSetChanged()
