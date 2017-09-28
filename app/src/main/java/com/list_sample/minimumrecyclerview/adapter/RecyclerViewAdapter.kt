@@ -22,18 +22,52 @@ class RecyclerViewAdapter(context: Context, private val sectionGroup: SectionGro
     val ODD_NUMBER = 1
     val SECTION_HEADER = 2
 
+    lateinit var itemClickListener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onItemClick(view: View, position:Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
+        this.itemClickListener = itemClickListener
+    }
+
 
     // ViewHolder
-    inner class EvenNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class EvenNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val evenNumberCellText = itemView.findViewById<TextView>(R.id.even_number_cell_text)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+            itemClickListener.onItemClick(itemView, adapterPosition)
+        }
     }
 
-    inner class OddNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class OddNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val oddNumberCellText = itemView.findViewById<TextView>(R.id.odd_number_cell_text)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+            itemClickListener.onItemClick(itemView, adapterPosition)
+        }
     }
 
-    inner class SectionHeaderHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class SectionHeaderHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val titleText = itemView.findViewById<TextView>(R.id.section_header_title_text)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+            itemClickListener.onItemClick(itemView, adapterPosition)
+        }
     }
 
 

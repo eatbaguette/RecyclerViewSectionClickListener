@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.widget.Toast
 import com.list_sample.minimumrecyclerview.R
 import com.list_sample.minimumrecyclerview.adapter.RecyclerViewAdapter
 import com.list_sample.minimumrecyclerview.model.EvenNumberModel
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = adapter
+        adapter.setOnItemClickListener(onItemClickListener)
 
         // データをリストに入れて渡す。
         prepareData()
@@ -56,5 +59,12 @@ class MainActivity : AppCompatActivity() {
 
         // 更新
         adapter.notifyDataSetChanged()
+    }
+
+    // クリック時の処理を書く
+    private val onItemClickListener =  object : RecyclerViewAdapter.OnItemClickListener {
+        override fun onItemClick(view: View, position: Int) {
+            Toast.makeText(this@MainActivity, "Clicked " + position, Toast.LENGTH_LONG).show()
+        }
     }
 }
