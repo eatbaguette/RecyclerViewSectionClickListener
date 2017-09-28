@@ -16,62 +16,17 @@ import com.list_sample.minimumrecyclerview.model.OddNumberModel
 class RecyclerViewAdapter(context: Context, private val itemList: List<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val inflater = LayoutInflater.from(context)
 
+    val EVEN_NUMBER = 0
+    val ODD_NUMBER = 1
 
-    enum class ViewType(val id: Int) {
-
-        EvenNumber(0) {
-            override fun createViewHolder(inflater: LayoutInflater, viewGroup: ViewGroup): RecyclerView.ViewHolder {
-                return EvenNumberHolder(inflater.inflate(R.layout.even_number_cell, viewGroup, false))
-            }
-
-            override fun bindViewHolder(holder: RecyclerView.ViewHolder, item: Any) {
-                holder as EvenNumberHolder
-                item as EvenNumberModel
-
-                holder.evenNumberCellText.text = item.cellText
-            }
-
-        },
-
-        OddNumber(1) {
-            override fun createViewHolder(inflater: LayoutInflater, viewGroup: ViewGroup): RecyclerView.ViewHolder {
-                return OddNumberHolder(inflater.inflate(R.layout.odd_number_cell, viewGroup, false))
-            }
-
-            override fun bindViewHolder(holder: RecyclerView.ViewHolder, item: Any) {
-                holder as OddNumberHolder
-                item as OddNumberModel
-
-                holder.oddNumberCellText.text = item.cellText
-            }
-        };
-
-        // 抽象クラス
-        abstract fun createViewHolder(inflater: LayoutInflater, viewGroup: ViewGroup) : RecyclerView.ViewHolder
-        abstract fun bindViewHolder(holder: RecyclerView.ViewHolder, item: Any)
-
-        // ViewTypeを探す
-        companion object {
-            fun forId(id: Int): ViewType {
-                for(viewType: ViewType in values()) {
-                    if (viewType.id == id) {
-                        return viewType
-                    }
-                }
-                throw AssertionError("no enum")
-            }
-        }
-    }
 
     // ViewHolder
-    companion object {
-        private class EvenNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-            val evenNumberCellText = itemView.findViewById<TextView>(R.id.even_number_cell_text)
-        }
+    inner class EvenNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val evenNumberCellText = itemView.findViewById<TextView>(R.id.even_number_cell_text)
+    }
 
-        private class OddNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-            val oddNumberCellText = itemView.findViewById<TextView>(R.id.odd_number_cell_text)
-        }
+    inner class OddNumberHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val oddNumberCellText = itemView.findViewById<TextView>(R.id.odd_number_cell_text)
     }
 
 
@@ -79,12 +34,30 @@ class RecyclerViewAdapter(context: Context, private val itemList: List<Any>): Re
         val itemView = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.even_number_cell, parent, false)
 
-        return ViewType.forId(viewType).createViewHolder(inflater, parent)
+        if (viewType == EVEN_NUMBER) {
+            return EvenNumberHolder(inflater.inflate(R.layout.even_number_cell, parent, false))
+
+        } else if (viewType == ODD_NUMBER) {
+            return OddNumberHolder(inflater.inflate(R.layout.odd_number_cell, parent, false))
+        }
+
+        return EvenNumberHolder(inflater.inflate(R.layout.even_number_cell, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
-        ViewType.forId(holder.itemViewType).bindViewHolder(holder, item)
+
+        if (getItemViewType(position) == EVEN_NUMBER) {
+            holder as EvenNumberHolder
+            item as EvenNumberModel
+
+            holder.evenNumberCellText.text = item.cellText
+        } else if (getItemViewType(position) == ODD_NUMBER) {
+            holder as OddNumberHolder
+            item as OddNumberModel
+
+            holder.oddNumberCellText.text = item.cellText
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -92,10 +65,10 @@ class RecyclerViewAdapter(context: Context, private val itemList: List<Any>): Re
 
         return when(item) {
             is EvenNumberModel -> {
-                ViewType.EvenNumber.id
+                EVEN_NUMBER
             }
             is OddNumberModel -> {
-                ViewType.OddNumber.id
+                ODD_NUMBER
             }
             else -> {
                 throw AssertionError("no enum")
